@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <style>
+      .h{
+        display: flex;
+        overflow-x: scroll;
+        margin: 30px;
+        padding: 5px;
+      }
+      .r{
+        display: flex;
+        overflow-x: scroll;
+        overflow:hidden;
+        margin-right: 10px;
+        padding: 3px;
+      }
+      .card{
+        margin-left: 30px;
+      }
+      .navbar-expand-lg{
+        background-color: rgb(242, 202, 102);
+        text-shadow: 5px;
+        margin-bottom: 5px;
+        box-sizing: 5px;
+      }
+      .u{
+        background-color: rgb(242, 202, 102);
+        border: none;
+        padding-left: 5px;
+        padding-top: 7px;
+      }
+      .t{
+        background-color: rgb(209, 142, 75);
+        border-radius: 5px;
+      }
+      .k{
+        background-color: azure;
+      }
+      
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="k">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/" >Myecom</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link active" href="account/logout">Logout</a>
+                  </li>    
+                  <li class="nav-item">
+                    <form action="cart/view/" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="user_id" value="{{user.id}}">
+                      <button class="u">Cart</button>
+                    </form>
+                  </li>  
+                  <li class="nav-item">
+                    <form action="orders/" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="user_id" value="{{user.id}}">
+                      <button class="u" type="submit">Orders</button>
+                    </form>
+                    
+                  </li>
+              {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="login/">Login</a>
+                  </li>
+                  <li class ="nav-item">
+                    <a class="nav-link" href="account/">Register</a>
+                  </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <br>
+      {% for cat in categories %}
+      <h2>{{cat.name}}</h2>
+        <div class="h">
+          {% for dest in dests%}
+              {% if cat.name == dest.category %}
+                <a href="product/{{dest.id}}" id="dest.id">
+                <div class="card h-100" style="width: 18rem;" >
+                  <img height="250px" width="100px" src="{{dest.img.url}}" class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <h5 style="font-family:Lucida Console" class="card-title">{{dest.name}}</h5>
+                    <p class="card-text">{{dest.desc}}</p>
+                    {% if user.is_authenticated %}
+                      <div class="r">
+                        <form action="cart/" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="userid" value="{{user.id}}">
+                          <input type="hidden" name="productid" value="{{dest.id}}">
+                          <button class="t">Add to Cart</button>
+                        </form>
+                        <form action="orders/checkout/" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="userid" value="{{user.id}}">
+                          <input type="hidden" name="productid" value="{{dest.id}}">
+                          <button class="t">order</button>
+                        </form>
+                      </div>
+                    {% endif%}
+                  </div>
+                </div>
+                </a>
+              {% endif %}
+          {% endfor %}
+        </div>
+          <br>
+      {% endfor %}
+    </div>
+</body>
+</html>
